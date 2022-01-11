@@ -189,7 +189,7 @@ class Mario(EntityBase):
                 if self.dashboard.life <= 0:
                     self.gameOver()
                 #self.gameOver()
-            elif self.powerUpState == 1:               # here need to be fixed
+            elif self.powerUpState == 1:
                 self.powerUpState = 0
                 self.traits['goTrait'].updateAnimation(self.smallAnimation)
                 x, y = self.rect.x, self.rect.y
