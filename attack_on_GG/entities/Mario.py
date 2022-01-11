@@ -193,7 +193,7 @@ class Mario(EntityBase):
                 self.powerUpState = 0
                 self.traits['goTrait'].updateAnimation(self.smallAnimation)
                 x, y = self.rect.x, self.rect.y
-                self.rect = pygame.Rect(x, y + 32, int(self.image.get_size()[0]*64/self.image.get_size()[1]), 32)
+                self.rect = pygame.Rect(x, y + 32, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
                 self.invincibilityFrames = 60
                 self.sound.play_sfx(self.sound.pipe)
 
