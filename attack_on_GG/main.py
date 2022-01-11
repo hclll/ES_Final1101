@@ -22,7 +22,7 @@ def main():
     while not menu.start:
         menu.update()
 
-    mario = Mario(0, 0, level, screen, dashboard, sound, windowSize)
+    mario = Mario(0, 0, level, screen, dashboard, sound, windowSize, menu)
     clock = pygame.time.Clock()
 
     while not mario.restart:

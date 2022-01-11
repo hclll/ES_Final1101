@@ -4,9 +4,9 @@ from classes.Maths import Vec2D
 
 
 class EntityBase(object):
-    def __init__(self, x, y, gravity):
+    def __init__(self, x, y, gravity, width=32, height=32):
         self.vel = Vec2D()
-        self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
+        self.rect = pygame.Rect(x * 32, y * 32, width, height)
         self.gravity = gravity
         self.traits = None
         self.alive = True

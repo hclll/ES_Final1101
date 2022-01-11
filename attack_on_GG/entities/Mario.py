@@ -15,31 +15,52 @@ from classes.Pause import Pause
 from classes.Maths import Vec2D
 from entities.Bullet import Bullet
 from entities.Sword import Sword
+import os
 
-spriteCollection = Sprites().spriteCollection
-smallAnimation = Animation(
-    [
-        spriteCollection["mario_run1"].image,
-        spriteCollection["mario_run2"].image,
-        spriteCollection["mario_run3"].image,
-    ],
-    spriteCollection["mario_idle"].image,
-    spriteCollection["mario_jump"].image,
-)
-bigAnimation = Animation(
-    [
-        spriteCollection["mario_big_run1"].image,
-        spriteCollection["mario_big_run2"].image,
-        spriteCollection["mario_big_run3"].image,
-    ],
-    spriteCollection["mario_big_idle"].image,
-    spriteCollection["mario_big_jump"].image,
-)
 
 
 class Mario(EntityBase):
-    def __init__(self, x, y, level, screen, dashboard, sound, windowSize, gravity=0.8):
-        super(Mario, self).__init__(x, y, gravity)
+    def __init__(self, x, y, level, screen, dashboard, sound, windowSize, menu, gravity=0.8):
+        self.menu = menu
+        if self.menu.choosenPlayer == "Mario":
+            super(Mario, self).__init__(x, y, gravity)
+        else:
+            self.image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
+            super(Mario, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
+
+        spriteCollection = Sprites().spriteCollection
+        if self.menu.choosenPlayer == "Mario":
+            self.smallAnimation = Animation(
+                [
+                    spriteCollection["mario_run1"].image,
+                    spriteCollection["mario_run2"].image,
+                    spriteCollection["mario_run3"].image,
+                ],
+                spriteCollection["mario_idle"].image,
+                spriteCollection["mario_jump"].image,
+            )
+            self.bigAnimation = Animation(
+                [
+                    spriteCollection["mario_big_run1"].image,
+                    spriteCollection["mario_big_run2"].image,
+                    spriteCollection["mario_big_run3"].image,
+                ],
+                spriteCollection["mario_big_idle"].image,
+                spriteCollection["mario_big_jump"].image,
+            )
+        else:
+            self.smallAnimation = Animation(
+                [self.image],
+                self.image,
+                self.image
+            )
+            self.bigimage = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
+            self.bigAnimation = Animation(
+                [self.bigimage],
+                self.bigimage,
+                self.bigimage
+            )
         self.camera = Camera(self.rect, self)
         self.sound = sound
         self.windowSize = windowSize
@@ -50,7 +71,7 @@ class Mario(EntityBase):
         self.invincibilityFrames = 0
         self.traits = {
             "jumpTrait": JumpTrait(self),
-            "goTrait": GoTrait(smallAnimation, screen, self.camera, self),
+            "goTrait": GoTrait(self.smallAnimation, screen, self.camera, self),
             "bounceTrait": bounceTrait(self),
         }
         self.lr_direction = self.traits["goTrait"].heading
@@ -168,11 +189,11 @@ class Mario(EntityBase):
                 if self.dashboard.life <= 0:
                     self.gameOver()
                 #self.gameOver()
-            elif self.powerUpState == 1:
+            elif self.powerUpState == 1:               # here need to be fixed
                 self.powerUpState = 0
-                self.traits['goTrait'].updateAnimation(smallAnimation)
+                self.traits['goTrait'].updateAnimation(self.smallAnimation)
                 x, y = self.rect.x, self.rect.y
-                self.rect = pygame.Rect(x, y + 32, 32, 32)
+                self.rect = pygame.Rect(x, y + 32, int(self.image.get_size()[0]*64/self.image.get_size()[1]), 32)
                 self.invincibilityFrames = 60
                 self.sound.play_sfx(self.sound.pipe)
 
@@ -240,8 +261,6 @@ class Mario(EntityBase):
         self.restart = True
 
     def loseLife(self):
-        print(self.dashboard.life)
-        #self.life -= 1
         self.dashboard.life -= 1
         self.pre_loseLife = self.time
         self.sound.music_channel.stop()
@@ -259,8 +278,11 @@ class Mario(EntityBase):
         if self.powerUpState == 0:
             if powerupID == 1:
                 self.powerUpState = 1
-                self.traits['goTrait'].updateAnimation(bigAnimation)
-                self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)
+                self.traits['goTrait'].updateAnimation(self.bigAnimation)
+                if self.menu.choosenPlayer == "Mario":
+                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)
+                else:
+                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, self.bigimage.get_size()[0], 64)
                 self.invincibilityFrames = 20
 
     def shoot(self):
@@ -270,5 +292,4 @@ class Mario(EntityBase):
     def fence(self):
         sword = Sword(self.rect.right, self.rect.centery, self.rect.width, self.lr_direction, self.screen, self.camera, self.levelObj, self.dashboard)
         self.swords.add(sword)
-        #sword.kill()
     
