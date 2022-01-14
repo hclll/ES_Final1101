@@ -28,7 +28,6 @@ class Mario(EntityBase):
             self.image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
             self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
             super(Mario, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
-
         spriteCollection = Sprites().spriteCollection
         if self.menu.choosenPlayer == "Mario":
             self.smallAnimation = Animation(
@@ -79,6 +78,8 @@ class Mario(EntityBase):
         self.isShooting = False
 
         self.levelObj = level
+        # print('aaa')
+        # print(self.rect)
         self.collision = Collider(self, level)
         self.screen = screen
         self.EntityCollider = EntityCollider(self)
@@ -193,7 +194,10 @@ class Mario(EntityBase):
                 self.powerUpState = 0
                 self.traits['goTrait'].updateAnimation(self.smallAnimation)
                 x, y = self.rect.x, self.rect.y
-                self.rect = pygame.Rect(x, y + 32, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
+                if self.menu.choosenPlayer == "Mario":
+                    self.rect = pygame.Rect(x, y + 32, 32, 32)
+                else:
+                    self.rect = pygame.Rect(x, y + 32, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
                 self.invincibilityFrames = 60
                 self.sound.play_sfx(self.sound.pipe)
 
@@ -282,7 +286,7 @@ class Mario(EntityBase):
                 if self.menu.choosenPlayer == "Mario":
                     self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)
                 else:
-                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, self.bigimage.get_size()[0], 64)
+                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64)
                 self.invincibilityFrames = 20
 
     def shoot(self):

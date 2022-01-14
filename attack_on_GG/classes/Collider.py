@@ -1,6 +1,7 @@
 class Collider:
     def __init__(self, entity, level):
         self.entity = entity
+        print(self.entity.rect)
         self.level = level.level
         self.levelObj = level
         self.result = []
@@ -19,7 +20,7 @@ class Collider:
         for row in rows:
             tiles = row[self.entity.getPosIndex().x : self.entity.getPosIndex().x + 2]
             for tile in tiles:
-                if tile.rect is not None:
+                if tile.rect is not None:   # this is the place need to be fixed
                     if self.entity.rect.colliderect(tile.rect):
                         if self.entity.vel.x > 0:
                             self.entity.rect.right = tile.rect.left

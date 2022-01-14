@@ -115,7 +115,7 @@ class Menu:
             self.sound.allowSFX = False
             self.sfx = False
             self.saveSettings("./settings.json")
-
+    
     def saveSettings(self, url):
         data = {"sound": self.music, "sfx": self.sfx}
         with open(url, "w") as outfile:
@@ -198,6 +198,10 @@ class Menu:
         self.playerNames = self.loadPlayerNames()
         self.drawPlayerChooser()
 
+    def takePhoto(self):
+        self.drawMenuBackground(False)
+        self.drawTakingPlayerPic()
+
     def drawBorder(self, x, y, width, height, color, thickness):
         pygame.draw.rect(self.screen, color, (x, y, width, thickness))
         pygame.draw.rect(self.screen, color, (x, y+width, width, thickness))
@@ -244,7 +248,10 @@ class Menu:
                 self.dashboard.drawText(playerName, 175*j+textOffset, 358, 12)
                 self.drawBorder(175*j+offset, 220, 125, 75, color, 5)
                 j += 1
-
+    def drawTakingPlayerPic(self):
+        # TODO add player's face
+        color = (255, 0, 0)
+        self.drawBorder(165, 55, 300, 300, color, 5)
     def loadLevelNames(self):
         files = []
         res = []
@@ -264,6 +271,7 @@ class Menu:
                 files.append(os.path.join(r, file))
         for f in files:
             res.append(os.path.split(f)[1].split(".")[0])
+        res.append(res.pop(res.index("Add Player")))
         self.playerCount = len(res)
         return res
 
@@ -335,10 +343,14 @@ class Menu:
                         self.start = True
                         return
                     if self.inChoosingPlayer:
-                        self.inChoosingPlayer = False
-                        self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
-                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
-                        return
+                        if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
+                            self.inChoosingPlayer = False
+                            self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
+                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                            return
+                        else:
+                            self.takePhoto()
+                            return
                     if not self.inSettings:
                         if self.state == 0:
                             self.chooseLevel()
