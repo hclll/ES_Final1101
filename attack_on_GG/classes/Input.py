@@ -4,10 +4,11 @@ import sys
 
 
 class Input:
-    def __init__(self, entity):
+    def __init__(self, entity, server):
         self.mouseX = 0
         self.mouseY = 0
         self.entity = entity
+        self.server = server
 
     def checkForInput(self):
         events = pygame.event.get()
@@ -17,18 +18,19 @@ class Input:
 
     def checkForKeyboardInput(self):
         pressedKeys = pygame.key.get_pressed()
+        self.server.get_data()
 
-        if pressedKeys[K_LEFT] or pressedKeys[K_h] and not pressedKeys[K_RIGHT]:
+        if (pressedKeys[K_LEFT] or pressedKeys[K_h] and not pressedKeys[K_RIGHT]) or self.server.keyDirection == "Left":
             self.entity.traits["goTrait"].direction = -1
-        elif pressedKeys[K_RIGHT] or pressedKeys[K_l] and not pressedKeys[K_LEFT]:
+        elif (pressedKeys[K_RIGHT] or pressedKeys[K_l] and not pressedKeys[K_LEFT]) or self.server.keyDirection == "Right":
             self.entity.traits["goTrait"].direction = 1
         else:
             self.entity.traits['goTrait'].direction = 0
 
-        isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP] or pressedKeys[K_k]
+        isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP] or pressedKeys[K_k] or (self.server.loudness > 85)
         
-        isFencing = pressedKeys[K_c]
-        isShooting = pressedKeys[K_v]
+        isFencing = pressedKeys[K_c] or (self.server.attack)
+        isShooting = pressedKeys[K_v] or (self.server.pressed)
 
         self.entity.traits['jumpTrait'].jump(isJumping)
         self.entity.isFencing = isFencing

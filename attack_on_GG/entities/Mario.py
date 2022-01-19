@@ -63,7 +63,7 @@ class Mario(EntityBase):
         self.camera = Camera(self.rect, self)
         self.sound = sound
         self.windowSize = windowSize
-        self.input = Input(self)
+        self.input = Input(self, menu.server)
         self.inAir = False
         self.inJump = False
         self.powerUpState = 0

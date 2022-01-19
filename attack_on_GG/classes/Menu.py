@@ -7,7 +7,7 @@ from classes.Spritesheet import Spritesheet
 
 
 class Menu:
-    def __init__(self, screen, dashboard, level, sound, choosenPlayer="Mario"):
+    def __init__(self, screen, dashboard, level, sound, server, choosenPlayer="Mario"):
         self.screen = screen
         self.sound = sound
         self.start = False
@@ -43,6 +43,8 @@ class Menu:
             20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
         self.loadSettings("./settings.json")
+        self.server = server
+        self.serverDirDelay = 0
 
     def update(self):
         self.checkInput()
@@ -276,6 +278,108 @@ class Menu:
         return res
 
     def checkInput(self):
+        if self.server.connected:
+            self.server.get_data()
+            if self.server.pressed:
+                if self.inChoosingLevel:
+                    self.inChoosingLevel = False
+                    self.dashboard.state = "start"
+                    self.dashboard.time = 0
+                    self.level.loadLevel(self.levelNames[self.currSelectedLevel-1])
+                    self.dashboard.levelName = self.levelNames[self.currSelectedLevel-1].split("Level")[1]
+                    self.start = True
+                    return
+                if self.inChoosingPlayer:
+                    if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
+                        self.inChoosingPlayer = False
+                        self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                        return
+                    else:
+                        self.takePhoto()
+                        return
+                if not self.inSettings:
+                    if self.state == 0:
+                        self.chooseLevel()
+                    elif self.state == 1:
+                        self.choosePlayer()
+                    elif self.state == 2:
+                        self.inSettings = True
+                        self.state = 0
+                    elif self.state == 3:
+                        pygame.quit()
+                        sys.exit()
+                else:
+                    if self.state == 0:
+                        if self.music:
+                            self.sound.music_channel.stop()
+                            self.music = False
+                        else:
+                            self.sound.music_channel.play(self.sound.soundtrack, loops=-1)
+                            self.music = True
+                        self.saveSettings("./settings.json")
+                    elif self.state == 1:
+                        if self.sfx:
+                            self.sound.allowSFX = False
+                            self.sfx = False
+                        else:
+                            self.sound.allowSFX = True
+                            self.sfx = True
+                        self.saveSettings("./settings.json")
+                    elif self.state == 2:
+                        self.inSettings = False
+
+            if self.serverDirDelay > 0:
+                self.serverDirDelay -= 1
+            elif self.server.keyDirection == "Up":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel > 3:
+                        self.currSelectedLevel -= 3
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer > 3:
+                        self.currSelectedPlayer -= 3
+                        self.drawPlayerChooser()
+                if self.state > 0:
+                    self.state -= 1
+                self.serverDirDelay = 3
+            elif self.server.keyDirection == "Down":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel+3 <= self.levelCount:
+                        self.currSelectedLevel += 3
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer+3 <= self.playerCount:
+                        self.currSelectedPlayer += 3
+                        self.drawPlayerChooser()
+                if not self.inSettings and self.state < 3:
+                    self.state += 1
+                elif self.inSettings and self.state < 2:
+                    self.state += 1
+                self.serverDirDelay = 3
+            elif self.server.keyDirection == "Left":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel > 1:
+                        self.currSelectedLevel -= 1
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer > 1:
+                        self.currSelectedPlayer -= 1
+                        self.drawPlayerChooser()
+                self.serverDirDelay = 3
+            elif self.server.keyDirection == "Right":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel < self.levelCount:
+                        self.currSelectedLevel += 1
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer < self.playerCount:
+                        self.currSelectedPlayer += 1
+                        self.drawPlayerChooser()
+                self.serverDirDelay = 3
+
+
+
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
