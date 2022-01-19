@@ -7,7 +7,7 @@ from classes.Spritesheet import Spritesheet
 
 
 class Menu:
-    def __init__(self, screen, dashboard, level, sound, server, choosenPlayer="Mario"):
+    def __init__(self, screen, dashboard, level, sound, server, choosenPlayer="Strong Shiba.png"):
         self.screen = screen
         self.sound = sound
         self.start = False
@@ -16,7 +16,7 @@ class Menu:
         self.level = level
         self.music = True
         self.sfx = True
-        self.currSelectedLevel = 1
+        self.currSelectedLevel = 2
         self.currSelectedPlayer = 1
         self.levelNames = []
         self.playerNames = []
@@ -168,7 +168,7 @@ class Menu:
                 (2 * 32, 12 * 32),
             )
         else:
-            image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', self.choosenPlayer))).convert_alpha()
+            image = pygame.image.load('{}'.format(os.path.join('playerimg', self.choosenPlayer))).convert_alpha()
             image = pygame.transform.scale(image, (int(image.get_size()[0]*32/image.get_size()[1]), 32))
             self.screen.blit(
                 image,
@@ -251,7 +251,7 @@ class Menu:
         imageOffset = 77
         print(self.loadPlayerNames())
         for i, playerName in enumerate(self.loadPlayerNames()):
-            image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', playerName))).convert_alpha()
+            image = pygame.image.load('{}'.format(os.path.join('playerimg', playerName))).convert_alpha()
             image = pygame.transform.scale(image, (125, 125))
             
             if self.currSelectedPlayer == i+1:
@@ -260,11 +260,11 @@ class Menu:
                 color = (150, 150, 150)
             if i < 3:
                 self.screen.blit(image, (175*i+imageOffset, 60))
-                self.dashboard.drawText(playerName, 175*i+textOffset, 193, 12)
+                self.dashboard.drawText(playerName.split(".")[0], 175*i+textOffset, 193, 12)
                 self.drawBorder(175*i+offset, 55, 125, 75, color, 5)
             else:
                 self.screen.blit(image, (175*j+imageOffset, 225))
-                self.dashboard.drawText(playerName, 175*j+textOffset, 358, 12)
+                self.dashboard.drawText(playerName.split(".")[0], 175*j+textOffset, 358, 12)
                 self.drawBorder(175*j+offset, 220, 125, 75, color, 5)
                 j += 1
     def drawTakingPlayerPic(self):
@@ -285,14 +285,20 @@ class Menu:
     def loadPlayerNames(self):
         files = []
         res = []
+        res1 = []
         for r, d, f in os.walk("./playerimg"):
             for file in f:
                 files.append(os.path.join(r, file))
         for f in files:
-            res.append(os.path.split(f)[1].split(".")[0])
+            if os.path.split(f)[1].split(".")[1] == 'jpg' or os.path.split(f)[1].split(".")[1] == 'png':
+                res.append(os.path.split(f)[1].split(".")[0])
+                res1.append(os.path.split(f)[1])
         res.append(res.pop(res.index("Add Player")))
         self.playerCount = len(res)
-        return res
+        # print("res1",res1)
+        # print("res",res)
+        # print("f",files)
+        return res1
 
     def checkInput(self):
         if self.server.connected:

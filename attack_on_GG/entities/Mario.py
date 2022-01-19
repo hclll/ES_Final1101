@@ -25,7 +25,7 @@ class Mario(EntityBase):
         if self.menu.choosenPlayer == "Mario":
             super(Mario, self).__init__(x, y, gravity)
         else:
-            self.image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
+            self.image = pygame.image.load('{}'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
             self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
             super(Mario, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
         spriteCollection = Sprites().spriteCollection
