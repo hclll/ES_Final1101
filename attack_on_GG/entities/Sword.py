@@ -23,7 +23,7 @@ class Sword(pygame.sprite.Sprite):
 		self.levelObj = level
 		self.dashboard = dashboard
 
-		#self.count = 0
+		self.count = 0
 		
 
 	def update(self):
@@ -40,9 +40,9 @@ class Sword(pygame.sprite.Sprite):
 
 		self.kill()
 
-		# if self.count > 5:
-		# 	self.kill()
-		# self.count += 1
+		if self.count > 5:
+			self.kill()
+		self.count += 1
 
 
 	def checkEntityCollision(self):

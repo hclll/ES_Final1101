@@ -24,7 +24,7 @@ def main():
     Server
     '''
     HOST = '172.20.10.4'
-    PORT = 61037
+    PORT = 61038
     server = Server(HOST, PORT)
 
     menu = Menu(screen, dashboard, level, sound, server)

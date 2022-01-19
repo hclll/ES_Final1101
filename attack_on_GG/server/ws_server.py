@@ -50,7 +50,7 @@ class Server:
         self.keyDirection = "No"
         self.attack = 0
         self.pressed = 0
-        self.button_released = 1
+        self.button_last = 0
 
         self.cutOffFrequency = 400.0
         self.sampleRate = 16000
@@ -245,13 +245,14 @@ class Server:
             if (len(raw) == 7):
                 # print(raw)
                 raw = [int(x) for x in raw]
-                if (raw[6] == 1 and self.button_released == 1):
+                if (raw[6] == 1 and self.button_last == 0):
                     print("Pressed!")
                     self.pressed = 1
-                    self.button_released == 0
-                if (raw[6] == 0 and self.pressed == 1):
-                    self.button_released = 1
+                else:
                     self.pressed = 0
+                
+                self.button_last = raw[6]
+                
 
                 rectified = self.RectifyData(raw)
 
