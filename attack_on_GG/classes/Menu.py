@@ -46,6 +46,11 @@ class Menu:
         self.server = server
         self.serverDirDelay = 0
 
+        self.stmImg = pygame.image.load("./img/controller2.png")
+        self.stmImg.convert()
+        self.stmImg = pygame.transform.scale(self.stmImg, (35,30))
+
+
     def update(self):
         self.checkInput()
         if self.inChoosingLevel:
@@ -60,6 +65,12 @@ class Menu:
             self.drawMenu()
         else:
             self.drawSettings()
+
+        if self.server.connected:
+            self.screen.blit(self.stmImg, (325, 30))
+        else:
+            self.dashboard.drawText("Connecting to controller...", 180, 60, 13)
+
 
     def drawDot(self):
         if self.state == 0:

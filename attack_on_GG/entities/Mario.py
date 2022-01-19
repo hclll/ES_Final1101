@@ -54,7 +54,7 @@ class Mario(EntityBase):
                 self.image,
                 self.image
             )
-            self.bigimage = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
+            self.bigimage = pygame.transform.scale(self.image, (32,64))#(int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
             self.bigAnimation = Animation(
                 [self.bigimage],
                 self.bigimage,
@@ -286,7 +286,7 @@ class Mario(EntityBase):
                 if self.menu.choosenPlayer == "Mario":
                     self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)
                 else:
-                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64)
+                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)#int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64)
                 self.invincibilityFrames = 20
 
     def shoot(self):
