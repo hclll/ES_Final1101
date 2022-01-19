@@ -10,6 +10,11 @@ import threading
 
 windowSize = 640, 480
 
+HOST = '172.20.10.4'
+PORT = 61038
+
+server = Server(HOST, PORT)
+
 
 def main():
     pygame.mixer.pre_init(44100, -16, 2, 4096)
@@ -23,16 +28,14 @@ def main():
     '''
     Server
     '''
-    HOST = '172.20.10.4'
-    PORT = 61038
-    server = Server(HOST, PORT)
-
+    
     menu = Menu(screen, dashboard, level, sound, server)
 
     menu.update()
     menu.update()
     menu.update()
-    server._connect()
+    if not server.connected:
+        server._connect()
     
     while not menu.start:
         menu.update()

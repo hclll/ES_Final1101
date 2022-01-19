@@ -5,7 +5,7 @@ from classes.Spritesheet import Spritesheet
 from classes.GaussianBlur import GaussianBlur
 
 class Pause:
-    def __init__(self, screen, entity, dashboard):
+    def __init__(self, screen, entity, dashboard, server):
         self.screen = screen
         self.entity = entity
         self.dashboard = dashboard
@@ -18,6 +18,7 @@ class Pause:
         self.gray_dot = self.spritesheet.image_at(
             20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
+        self.server = server
 
     def update(self):
         self.screen.blit(self.pause_srfc, (0, 0))
@@ -37,6 +38,20 @@ class Pause:
             self.screen.blit(self.gray_dot, (100, 275))
 
     def checkInput(self):
+        if self.server.connected:
+            self.server.get_data()
+            if self.server.pressed:
+                if self.state == 0:
+                    self.entity.pause = False
+                elif self.state == 1:
+                    self.entity.restart = True
+            elif self.server.keyDirection == "Up":
+                if self.state > 0:
+                    self.state -= 1
+            elif self.server.keyDirection == "Down":
+                if self.state < 1:
+                    self.state += 1
+
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:

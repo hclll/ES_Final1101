@@ -66,6 +66,7 @@ class Menu:
         else:
             self.drawSettings()
 
+        print(self.server)
         if self.server.connected:
             self.screen.blit(self.stmImg, (325, 30))
         else:
@@ -304,7 +305,7 @@ class Menu:
                     if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                         self.inChoosingPlayer = False
                         self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
-                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
                         return
                     else:
                         self.takePhoto()
@@ -402,7 +403,7 @@ class Menu:
                         self.inChoosingLevel = False
                         self.inSettings = False
                         self.inChoosingPlayer = False
-                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
                     else:
                         pygame.quit()
                         sys.exit()
@@ -461,7 +462,7 @@ class Menu:
                         if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                             self.inChoosingPlayer = False
                             self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
-                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
                             return
                         else:
                             self.takePhoto()

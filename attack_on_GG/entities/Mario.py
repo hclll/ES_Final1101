@@ -86,7 +86,7 @@ class Mario(EntityBase):
         self.dashboard = dashboard
         self.restart = False
         self.pause = False
-        self.pauseObj = Pause(screen, self, dashboard)
+        self.pauseObj = Pause(screen, self, dashboard, self.menu.server)
         self.bullets = pygame.sprite.Group()
         self.swords = pygame.sprite.Group()
 
