@@ -10,7 +10,7 @@ import threading
 
 windowSize = 640, 480
 
-HOST = '172.20.10.4'
+HOST = '192.168.203.224'
 PORT = 61038
 
 server = Server(HOST, PORT)
@@ -34,8 +34,9 @@ def main():
     menu.update()
     menu.update()
     menu.update()
-    if not server.connected:
-        server._connect()
+
+    # if not server.connected:
+    #     server._connect()
     
     while not menu.start:
         menu.update()

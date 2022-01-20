@@ -34,8 +34,8 @@ class Server:
     def __init__(self, HOST, PORT):
         self.HOST = HOST
         self.PORT = PORT
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.bind((self.HOST, self.PORT))
+        # self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # self.s.bind((self.HOST, self.PORT))
         self.bias = [0 for i in range(6)]
         self.fRad2Deg = 57.295779513 # Coefficient from Rad to Deg
         self.dt_1 = 0.005 # Time Period

@@ -14,6 +14,24 @@ class Goomba(EntityBase):
             [
                 self.spriteCollection.get("goomba-1").image,
                 self.spriteCollection.get("goomba-2").image,
+                self.spriteCollection.get("goomba-3").image,
+                self.spriteCollection.get("goomba-4").image,
+                self.spriteCollection.get("goomba-5").image,
+                self.spriteCollection.get("goomba-6").image,
+                self.spriteCollection.get("goomba-7").image,
+                self.spriteCollection.get("goomba-8").image,
+                self.spriteCollection.get("goomba-9").image,
+                self.spriteCollection.get("goomba-10").image,
+                self.spriteCollection.get("goomba-11").image,
+                self.spriteCollection.get("goomba-12").image,
+                self.spriteCollection.get("goomba-13").image,
+                self.spriteCollection.get("goomba-14").image,
+                self.spriteCollection.get("goomba-15").image,
+                self.spriteCollection.get("goomba-16").image,
+                self.spriteCollection.get("goomba-17").image,
+                self.spriteCollection.get("goomba-18").image,
+                self.spriteCollection.get("goomba-19").image,
+                self.spriteCollection.get("goomba-20").image,
             ]
         )
         self.screen = screen

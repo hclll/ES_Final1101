@@ -104,16 +104,24 @@ class Menu:
     def drawSettingDot(self):
         if self.state == 0:
             self.screen.blit(self.menu_dot, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 313))
-            self.screen.blit(self.menu_dot2, (145, 353))
+            self.screen.blit(self.menu_dot2, (145, 303))
+            self.screen.blit(self.menu_dot2, (145, 332))
+            self.screen.blit(self.menu_dot2, (145, 362))
         elif self.state == 1:
             self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot, (145, 313))
-            self.screen.blit(self.menu_dot2, (145, 353))
+            self.screen.blit(self.menu_dot, (145, 303))
+            self.screen.blit(self.menu_dot2, (145, 332))
+            self.screen.blit(self.menu_dot2, (145, 362))
         elif self.state == 2:
             self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 313))
-            self.screen.blit(self.menu_dot, (145, 353))
+            self.screen.blit(self.menu_dot2, (145, 303))
+            self.screen.blit(self.menu_dot, (145, 332))
+            self.screen.blit(self.menu_dot2, (145, 362))
+        elif self.state == 3:
+            self.screen.blit(self.menu_dot2, (145, 273))
+            self.screen.blit(self.menu_dot2, (145, 303))
+            self.screen.blit(self.menu_dot2, (145, 332))
+            self.screen.blit(self.menu_dot, (145, 362))
 
     def loadSettings(self, url):
         try:
@@ -199,13 +207,14 @@ class Menu:
             self.dashboard.drawText("ON", 340, 280, 24)
         else:
             self.dashboard.drawText("OFF", 340, 280, 24)
-        self.dashboard.drawText("SFX", 180, 320, 24)
+        
+        self.dashboard.drawText("SFX", 180, 310, 24)
         if self.sfx:
-            self.dashboard.drawText("ON", 340, 320, 24)
+            self.dashboard.drawText("ON", 340, 310, 24)
         else:
-            self.dashboard.drawText("OFF", 340, 320, 24)
-        self.dashboard.drawText("BACK", 180, 360, 24)
-
+            self.dashboard.drawText("OFF", 340, 310, 24)
+        self.dashboard.drawText("CONNECT", 180, 340, 24)
+        self.dashboard.drawText("BACK", 180, 370, 24)
     def chooseLevel(self):
         self.drawMenuBackground(False)
         self.inChoosingLevel = True
@@ -379,7 +388,7 @@ class Menu:
                         self.drawPlayerChooser()
                 if not self.inSettings and self.state < 3:
                     self.state += 1
-                elif self.inSettings and self.state < 2:
+                elif self.inSettings and self.state < 3:
                     self.state += 1
                 self.serverDirDelay = 3
             elif self.server.keyDirection == "Left":
@@ -442,7 +451,7 @@ class Menu:
                             self.drawPlayerChooser()
                     if not self.inSettings and self.state < 3:
                         self.state += 1
-                    elif self.inSettings and self.state < 2:
+                    elif self.inSettings and self.state < 3:
                         self.state += 1
                 elif event.key == pygame.K_LEFT or event.key == pygame.K_h:
                     if self.inChoosingLevel:
@@ -473,7 +482,6 @@ class Menu:
                         return
                     if self.inTakingPhoto:
                         self.inTakingPhoto = False
-                        print('aaa')
                         return
                     if self.inChoosingPlayer:
                         if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
@@ -485,7 +493,6 @@ class Menu:
                             self.inTakingPhoto = True
                             self.currSelectedPlayer = 1
                             self.takePhoto()
-                            print('bbb')
                             return
                     if not self.inSettings:
                         if self.state == 0:
@@ -516,5 +523,7 @@ class Menu:
                                 self.sfx = True
                             self.saveSettings("./settings.json")
                         elif self.state == 2:
+                            pass
+                        elif self.state == 3:
                             self.inSettings = False
         pygame.display.update()

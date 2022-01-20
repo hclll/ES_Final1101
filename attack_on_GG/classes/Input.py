@@ -18,7 +18,8 @@ class Input:
 
     def checkForKeyboardInput(self):
         pressedKeys = pygame.key.get_pressed()
-        self.server.get_data()
+        if self.server.connected:
+            self.server.get_data()
 
         if (pressedKeys[K_LEFT] or pressedKeys[K_h] and not pressedKeys[K_RIGHT]) or self.server.keyDirection == "Left":
             self.entity.traits["goTrait"].direction = -1

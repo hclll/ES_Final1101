@@ -1,29 +1,173 @@
 {
-    "spriteSheetURL": "./img/characters.gif",
+    "spriteSheetURL": "./img/burger.png",
     "type":"character",
-    "size":[16,16],
+    "size":[480,480],
     "sprites":[
         {
             "name":"goomba-1",
-            "x":296, 
-            "y":187,
-            "scalefactor":2,
+            "x":0, 
+            "y":0,
+            "scalefactor":0.066666,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"goomba-2",
-            "x":315, 
-            "y":187,
-            "scalefactor":2,
+            "x":480, 
+            "y":0,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-3",
+            "x":960, 
+            "y":0,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-4",
+            "x":1440, 
+            "y":0,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-5",
+            "x":1920, 
+            "y":0,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-6",
+            "x":0, 
+            "y":480,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-7",
+            "x":480, 
+            "y":480,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-8",
+            "x":960, 
+            "y":480,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-9",
+            "x":1440, 
+            "y":480,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-10",
+            "x":1920, 
+            "y":480,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-11",
+            "x":0, 
+            "y":960,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-12",
+            "x":480, 
+            "y":960,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-13",
+            "x":960, 
+            "y":960,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-14",
+            "x":1440, 
+            "y":960,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-15",
+            "x":1920, 
+            "y":960,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-16",
+            "x":0, 
+            "y":1440,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-17",
+            "x":480, 
+            "y":1440,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-18",
+            "x":960, 
+            "y":1440,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-19",
+            "x":1440, 
+            "y":1440,
+            "scalefactor":0.066666,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"goomba-20",
+            "x":1920, 
+            "y":1440,
+            "scalefactor":0.066666,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"goomba-flat",
-            "x":277, 
-            "y":187,
-            "scalefactor":2,
+            "x":1920, 
+            "y":1440,
+            "scalefactor":0.066666,
             "colorKey":-1,
             "collision":false
         }

@@ -65,7 +65,10 @@ class Sprites:
                     resDict.update(dic)
                     continue
                 elif data["type"] == "character" or data["type"] == "item":
+                    
                     for sprite in data["sprites"]:
+                        # if data["spriteSheetURL"] == "./img/burger.png":
+                        #     print(sprite)
                         try:
                             colorkey = sprite["colorKey"]
                         except KeyError:
@@ -75,6 +78,8 @@ class Sprites:
                             ySize = sprite['ysize']
                         except KeyError:
                             xSize, ySize = data['size']
+                        if data["spriteSheetURL"] == "./img/burger.png":
+                            print(xSize, ySize)
                         dic[sprite["name"]] = Sprite(
                             mySpritesheet.image_at(
                                 sprite["x"],
@@ -84,6 +89,7 @@ class Sprites:
                                 True,
                                 xTileSize=xSize,
                                 yTileSize=ySize,
+                                imgurl=data["spriteSheetURL"]
                             ),
                             sprite["collision"],
                         )
