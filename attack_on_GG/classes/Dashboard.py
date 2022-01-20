@@ -20,7 +20,7 @@ class Dashboard(Font):
         self.lifeImg = pygame.transform.scale(self.lifeImg, (15, 15))
 
     def update(self):
-        self.drawText("MARIO", 50, 20, 15)
+        self.drawText("GG!!", 50, 20, 15)
         self.drawText(self.pointString(), 50, 37, 15)
 
         self.drawText("@x{}".format(self.coinString()), 180, 37, 15)
