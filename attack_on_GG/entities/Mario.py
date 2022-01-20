@@ -25,7 +25,7 @@ class Mario(EntityBase):
         if self.menu.choosenPlayer == "Mario":
             super(Mario, self).__init__(x, y, gravity)
         else:
-            self.image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
+            self.image = pygame.image.load('{}'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
             self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
             super(Mario, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
         spriteCollection = Sprites().spriteCollection
@@ -54,7 +54,7 @@ class Mario(EntityBase):
                 self.image,
                 self.image
             )
-            self.bigimage = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
+            self.bigimage = pygame.transform.scale(self.image, (32,64))#(int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
             self.bigAnimation = Animation(
                 [self.bigimage],
                 self.bigimage,
@@ -63,7 +63,7 @@ class Mario(EntityBase):
         self.camera = Camera(self.rect, self)
         self.sound = sound
         self.windowSize = windowSize
-        self.input = Input(self)
+        self.input = Input(self, menu.server)
         self.inAir = False
         self.inJump = False
         self.powerUpState = 0
@@ -86,7 +86,7 @@ class Mario(EntityBase):
         self.dashboard = dashboard
         self.restart = False
         self.pause = False
-        self.pauseObj = Pause(screen, self, dashboard)
+        self.pauseObj = Pause(screen, self, dashboard, self.menu.server)
         self.bullets = pygame.sprite.Group()
         self.swords = pygame.sprite.Group()
 
@@ -286,7 +286,7 @@ class Mario(EntityBase):
                 if self.menu.choosenPlayer == "Mario":
                     self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)
                 else:
-                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64)
+                    self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)#int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64)
                 self.invincibilityFrames = 20
 
     def shoot(self):

@@ -1,7 +1,7 @@
 class Collider:
     def __init__(self, entity, level):
         self.entity = entity
-        print(self.entity.rect)
+        #print(self.entity.rect)
         self.level = level.level
         self.levelObj = level
         self.result = []

@@ -7,7 +7,7 @@ from classes.Spritesheet import Spritesheet
 
 
 class Menu:
-    def __init__(self, screen, dashboard, level, sound, choosenPlayer="Mario"):
+    def __init__(self, screen, dashboard, level, sound, server, choosenPlayer="Strong Shiba.png"):
         self.screen = screen
         self.sound = sound
         self.start = False
@@ -16,7 +16,7 @@ class Menu:
         self.level = level
         self.music = True
         self.sfx = True
-        self.currSelectedLevel = 1
+        self.currSelectedLevel = 2
         self.currSelectedPlayer = 1
         self.levelNames = []
         self.playerNames = []
@@ -28,15 +28,20 @@ class Menu:
         self.playerCount = 0
         self.choosenPlayer = choosenPlayer
         self.spritesheet = Spritesheet("./img/title_screen.png")
-        self.menu_banner = self.spritesheet.image_at(
-            0,
-            60,
-            2,
-            colorkey=[255, 0, 220],
-            ignoreTileSize=True,
-            xTileSize=180,
-            yTileSize=88,
-        )
+        # self.menu_banner = self.spritesheet.image_at(
+        #     0,
+        #     60,
+        #     2,
+        #     colorkey=[255, 0, 220],
+        #     ignoreTileSize=True,
+        #     xTileSize=180,
+        #     yTileSize=88,
+        # )
+
+        self.bannerImg = pygame.image.load("./img/banner.png")
+        self.bannerImg.convert()
+        self.menu_banner = pygame.transform.scale(self.bannerImg, (500,200))
+
         self.menu_dot = self.spritesheet.image_at(
             0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
@@ -44,6 +49,13 @@ class Menu:
             20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
         self.loadSettings("./settings.json")
+        self.server = server
+        self.serverDirDelay = 0
+
+        self.stmImg = pygame.image.load("./img/controller2.png")
+        self.stmImg.convert()
+        self.stmImg = pygame.transform.scale(self.stmImg, (35,30))
+
 
     def update(self):
         self.checkInput()
@@ -59,6 +71,13 @@ class Menu:
             self.drawMenu()
         else:
             self.drawSettings()
+
+        print(self.server)
+        if self.server.connected:
+            self.screen.blit(self.stmImg, (325, 30))
+        else:
+            self.dashboard.drawText("Connecting to controller...", 180, 60, 13)
+
 
     def drawDot(self):
         if self.state == 0:
@@ -143,14 +162,14 @@ class Menu:
                     (x * 32, y * 32),
                 )
         if withBanner:
-            self.screen.blit(self.menu_banner, (150, 80))
+            self.screen.blit(self.menu_banner, (80, 80))
         if self.choosenPlayer == "Mario":
             self.screen.blit(
                 self.level.sprites.spriteCollection.get("mario_idle").image,
                 (2 * 32, 12 * 32),
             )
         else:
-            image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', self.choosenPlayer))).convert_alpha()
+            image = pygame.image.load('{}'.format(os.path.join('playerimg', self.choosenPlayer))).convert_alpha()
             image = pygame.transform.scale(image, (int(image.get_size()[0]*32/image.get_size()[1]), 32))
             self.screen.blit(
                 image,
@@ -233,7 +252,7 @@ class Menu:
         imageOffset = 77
         print(self.loadPlayerNames())
         for i, playerName in enumerate(self.loadPlayerNames()):
-            image = pygame.image.load('{}.jpg'.format(os.path.join('playerimg', playerName))).convert_alpha()
+            image = pygame.image.load('{}'.format(os.path.join('playerimg', playerName))).convert_alpha()
             image = pygame.transform.scale(image, (125, 125))
             
             if self.currSelectedPlayer == i+1:
@@ -242,11 +261,11 @@ class Menu:
                 color = (150, 150, 150)
             if i < 3:
                 self.screen.blit(image, (175*i+imageOffset, 60))
-                self.dashboard.drawText(playerName, 175*i+textOffset, 193, 12)
+                self.dashboard.drawText(playerName.split(".")[0], 175*i+textOffset, 193, 12)
                 self.drawBorder(175*i+offset, 55, 125, 75, color, 5)
             else:
                 self.screen.blit(image, (175*j+imageOffset, 225))
-                self.dashboard.drawText(playerName, 175*j+textOffset, 358, 12)
+                self.dashboard.drawText(playerName.split(".")[0], 175*j+textOffset, 358, 12)
                 self.drawBorder(175*j+offset, 220, 125, 75, color, 5)
                 j += 1
     def drawTakingPlayerPic(self):
@@ -268,16 +287,124 @@ class Menu:
     def loadPlayerNames(self):
         files = []
         res = []
+        res1 = []
         for r, d, f in os.walk("./playerimg"):
             for file in f:
                 files.append(os.path.join(r, file))
         for f in files:
-            res.append(os.path.split(f)[1].split(".")[0])
+            if os.path.split(f)[1].split(".")[1] == 'jpg' or os.path.split(f)[1].split(".")[1] == 'png':
+                res.append(os.path.split(f)[1].split(".")[0])
+                res1.append(os.path.split(f)[1])
         res.append(res.pop(res.index("Add Player")))
         self.playerCount = len(res)
-        return res
+        # print("res1",res1)
+        # print("res",res)
+        # print("f",files)
+        return res1
 
     def checkInput(self):
+        if self.server.connected:
+            self.server.get_data()
+            if self.server.pressed:
+                if self.inChoosingLevel:
+                    self.inChoosingLevel = False
+                    self.dashboard.state = "start"
+                    self.dashboard.time = 0
+                    self.level.loadLevel(self.levelNames[self.currSelectedLevel-1])
+                    self.dashboard.levelName = self.levelNames[self.currSelectedLevel-1].split("Level")[1]
+                    self.start = True
+                    return
+                if self.inChoosingPlayer:
+                    if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
+                        self.inChoosingPlayer = False
+                        self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
+                        return
+                    else:
+                        self.takePhoto()
+                        return
+                if not self.inSettings:
+                    if self.state == 0:
+                        self.chooseLevel()
+                    elif self.state == 1:
+                        self.choosePlayer()
+                    elif self.state == 2:
+                        self.inSettings = True
+                        self.state = 0
+                    elif self.state == 3:
+                        pygame.quit()
+                        sys.exit()
+                else:
+                    if self.state == 0:
+                        if self.music:
+                            self.sound.music_channel.stop()
+                            self.music = False
+                        else:
+                            self.sound.music_channel.play(self.sound.soundtrack, loops=-1)
+                            self.music = True
+                        self.saveSettings("./settings.json")
+                    elif self.state == 1:
+                        if self.sfx:
+                            self.sound.allowSFX = False
+                            self.sfx = False
+                        else:
+                            self.sound.allowSFX = True
+                            self.sfx = True
+                        self.saveSettings("./settings.json")
+                    elif self.state == 2:
+                        self.inSettings = False
+
+            if self.serverDirDelay > 0:
+                self.serverDirDelay -= 1
+            elif self.server.keyDirection == "Up":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel > 3:
+                        self.currSelectedLevel -= 3
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer > 3:
+                        self.currSelectedPlayer -= 3
+                        self.drawPlayerChooser()
+                if self.state > 0:
+                    self.state -= 1
+                self.serverDirDelay = 3
+            elif self.server.keyDirection == "Down":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel+3 <= self.levelCount:
+                        self.currSelectedLevel += 3
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer+3 <= self.playerCount:
+                        self.currSelectedPlayer += 3
+                        self.drawPlayerChooser()
+                if not self.inSettings and self.state < 3:
+                    self.state += 1
+                elif self.inSettings and self.state < 2:
+                    self.state += 1
+                self.serverDirDelay = 3
+            elif self.server.keyDirection == "Left":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel > 1:
+                        self.currSelectedLevel -= 1
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer > 1:
+                        self.currSelectedPlayer -= 1
+                        self.drawPlayerChooser()
+                self.serverDirDelay = 3
+            elif self.server.keyDirection == "Right":
+                if self.inChoosingLevel:
+                    if self.currSelectedLevel < self.levelCount:
+                        self.currSelectedLevel += 1
+                        self.drawLevelChooser()
+                elif self.inChoosingPlayer:
+                    if self.currSelectedPlayer < self.playerCount:
+                        self.currSelectedPlayer += 1
+                        self.drawPlayerChooser()
+                self.serverDirDelay = 3
+
+
+
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -289,7 +416,7 @@ class Menu:
                         self.inChoosingLevel = False
                         self.inSettings = False
                         self.inChoosingPlayer = False
-                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
                     else:
                         pygame.quit()
                         sys.exit()
@@ -352,7 +479,7 @@ class Menu:
                         if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                             self.inChoosingPlayer = False
                             self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
-                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
+                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
                             return
                         else:
                             self.inTakingPhoto = True

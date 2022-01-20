@@ -8,7 +8,7 @@ class LeftRightWalkTrait:
         self.direction = random.choice([-1, 1])
         self.entity = entity
         self.collDetection = Collider(self.entity, level)
-        self.speed = 1
+        self.speed = 2
         self.entity.vel.x = self.speed * self.direction
 
     def update(self):
