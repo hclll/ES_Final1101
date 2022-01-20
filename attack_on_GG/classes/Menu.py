@@ -47,6 +47,7 @@ class Menu:
         self.stmImg.convert()
         self.stmImg = pygame.transform.scale(self.stmImg, (35,30))
 
+        self.playerNum = 2
 
     def update(self):
         self.checkInput()

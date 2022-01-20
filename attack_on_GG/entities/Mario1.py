@@ -4,7 +4,7 @@ from classes.Animation import Animation
 from classes.Camera import Camera
 from classes.Collider import Collider
 from classes.EntityCollider import EntityCollider
-from classes.Input import Input
+from classes.Input1 import Input1
 from classes.Sprites import Sprites
 from entities.EntityBase import EntityBase
 from entities.Mushroom import RedMushroom
@@ -19,17 +19,19 @@ import os
 
 
 
-class Mario(EntityBase):
-    def __init__(self, x, y, level, screen, dashboard, sound, windowSize, menu, pos2mario, gravity=0.8):
+class Mario1(EntityBase):
+    def __init__(self, x, y, level, screen, dashboard, sound, windowSize, menu, pos2mario, camera, gravity=0.8):
         self.menu = menu
-        if self.menu.choosenPlayer == "Mario.jpg":
-            super(Mario, self).__init__(x, y, gravity)
+
+        self.menu.choosenPlayer = "Mario"
+        if self.menu.choosenPlayer == "Mario":
+            super(Mario1, self).__init__(x, y, gravity)
         else:
             self.image = pygame.image.load('{}'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
             self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
-            super(Mario, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
+            super(Mario1, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
         spriteCollection = Sprites().spriteCollection
-        if self.menu.choosenPlayer == "Mario.jpg":
+        if self.menu.choosenPlayer == "Mario":
             self.smallAnimation = Animation(
                 [
                     spriteCollection["mario_run1"].image,
@@ -48,22 +50,25 @@ class Mario(EntityBase):
                 spriteCollection["mario_big_idle"].image,
                 spriteCollection["mario_big_jump"].image,
             )
+            
         else:
             self.smallAnimation = Animation(
                 [self.image],
                 self.image,
                 self.image
             )
-            self.bigimage = pygame.transform.scale(self.image, (32,64))#(int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
+            self.bigimage = pygame.transform.scale(self.image, (32, 64))#(int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64))
             self.bigAnimation = Animation(
                 [self.bigimage],
                 self.bigimage,
                 self.bigimage
             )
-        self.camera = Camera(self.rect, self)
+            
+        #self.camera = Camera(self.rect, self)
+        self.camera = camera
         self.sound = sound
         self.windowSize = windowSize
-        self.input = Input(self, menu.server)
+        self.input = Input1(self, menu.server)
         self.inAir = False
         self.inJump = False
         self.powerUpState = 0
@@ -78,8 +83,7 @@ class Mario(EntityBase):
         self.isShooting = False
 
         self.levelObj = level
-        # print('aaa')
-        # print(self.rect)
+        
         self.collision = Collider(self, level)
         self.screen = screen
         self.EntityCollider = EntityCollider(self)
@@ -124,6 +128,7 @@ class Mario(EntityBase):
 
         self.time += 1
         
+        #print(self.getPosIndexAsFloat().x)
 
     def moveMario(self):
         self.rect.y += self.vel.y
@@ -132,7 +137,7 @@ class Mario(EntityBase):
         self.collision.checkX()
 
     def checkPos(self):
-        if self.getPos()[0] >= self.windowSize[0] - 40:
+        if self.getPosIndexAsFloat().x >= 59 :
             self.win()
 
     def checkEntityCollision(self):
@@ -298,4 +303,6 @@ class Mario(EntityBase):
     def fence(self):
         sword = Sword(self.rect.right, self.rect.centery, self.rect.width, self.lr_direction, self.screen, self.camera, self.levelObj, self.dashboard)
         self.swords.add(sword)
+        #print(self.rect.width)
+
     
