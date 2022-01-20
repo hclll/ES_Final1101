@@ -213,7 +213,7 @@ class Menu:
             self.dashboard.drawText("ON", 340, 310, 24)
         else:
             self.dashboard.drawText("OFF", 340, 310, 24)
-        self.dashboard.drawText("CONNECT", 180, 340, 24)
+        self.dashboard.drawText("RESET", 180, 340, 24)
         self.dashboard.drawText("BACK", 180, 370, 24)
     def chooseLevel(self):
         self.drawMenuBackground(False)
