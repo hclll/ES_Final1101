@@ -1,37 +1,53 @@
 {
-    "spriteSheetURL": "./img/koopas.png",
+    "spriteSheetURL": "./img/happy_fries.png",
     "type":"character",
-    "size":[17,32],
+    "size":[480,480],
     "sprites":[
         {
             "name":"koopa-1",
-            "x":1, 
+            "x":0, 
             "y":0,
-            "scalefactor":2,
+            "scalefactor":0.13,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"koopa-2",
-            "x":17, 
+            "x":480, 
             "y":0,
-            "scalefactor":2,
+            "scalefactor":0.13,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"koopa-3",
+            "x":960, 
+            "y":0,
+            "scalefactor":0.13,
+            "colorKey":-1,
+            "collision":false
+        },
+        {
+            "name":"koopa-4",
+            "x":1440, 
+            "y":0,
+            "scalefactor":0.13,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"koopa-hiding",
-            "x":45, 
-            "y":80,
-            "scalefactor":2,
+            "x":1920, 
+            "y":0,
+            "scalefactor":0.13,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"koopa-hiding-with-legs",
-            "x":163, 
-            "y":206,
-            "scalefactor":2,
+            "x":1920, 
+            "y":0,
+            "scalefactor":0.13,
             "colorKey":-1,
             "collision":false
         }

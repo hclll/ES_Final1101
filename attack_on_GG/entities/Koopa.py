@@ -16,6 +16,8 @@ class Koopa(EntityBase):
             [
                 self.spriteCollection.get("koopa-1").image,
                 self.spriteCollection.get("koopa-2").image,
+                self.spriteCollection.get("koopa-3").image,
+                self.spriteCollection.get("koopa-4").image,
             ]
         )
         self.screen = screen
