@@ -28,15 +28,6 @@ class Menu:
         self.playerCount = 0
         self.choosenPlayer = choosenPlayer
         self.spritesheet = Spritesheet("./img/title_screen.png")
-        # self.menu_banner = self.spritesheet.image_at(
-        #     0,
-        #     60,
-        #     2,
-        #     colorkey=[255, 0, 220],
-        #     ignoreTileSize=True,
-        #     xTileSize=180,
-        #     yTileSize=88,
-        # )
 
         self.bannerImg = pygame.image.load("./img/banner.png")
         self.bannerImg.convert()
@@ -171,7 +162,7 @@ class Menu:
                 )
         if withBanner:
             self.screen.blit(self.menu_banner, (80, 80))
-        if self.choosenPlayer == "Mario":
+        if self.choosenPlayer == "Mario.jpg":
             self.screen.blit(
                 self.level.sprites.spriteCollection.get("mario_idle").image,
                 (2 * 32, 12 * 32),
@@ -487,6 +478,7 @@ class Menu:
                         if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                             self.inChoosingPlayer = False
                             self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
+                            print(self.choosenPlayer)
                             self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
                             return
                         else:

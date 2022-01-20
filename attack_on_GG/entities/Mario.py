@@ -22,14 +22,14 @@ import os
 class Mario(EntityBase):
     def __init__(self, x, y, level, screen, dashboard, sound, windowSize, menu, gravity=0.8):
         self.menu = menu
-        if self.menu.choosenPlayer == "Mario":
+        if self.menu.choosenPlayer == "Mario.jpg":
             super(Mario, self).__init__(x, y, gravity)
         else:
             self.image = pygame.image.load('{}'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
             self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
             super(Mario, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
         spriteCollection = Sprites().spriteCollection
-        if self.menu.choosenPlayer == "Mario":
+        if self.menu.choosenPlayer == "Mario.jpg":
             self.smallAnimation = Animation(
                 [
                     spriteCollection["mario_run1"].image,
