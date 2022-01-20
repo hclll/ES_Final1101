@@ -22,6 +22,7 @@ class Menu:
         self.playerNames = []
         self.inChoosingLevel = False
         self.inChoosingPlayer = False
+        self.inTakingPhoto = False
         self.dashboard = dashboard
         self.levelCount = 0
         self.playerCount = 0
@@ -252,6 +253,7 @@ class Menu:
         # TODO add player's face
         color = (255, 0, 0)
         self.drawBorder(165, 55, 300, 300, color, 5)
+
     def loadLevelNames(self):
         files = []
         res = []
@@ -342,6 +344,10 @@ class Menu:
                         self.dashboard.levelName = self.levelNames[self.currSelectedLevel-1].split("Level")[1]
                         self.start = True
                         return
+                    if self.inTakingPhoto:
+                        self.inTakingPhoto = False
+                        print('aaa')
+                        return
                     if self.inChoosingPlayer:
                         if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                             self.inChoosingPlayer = False
@@ -349,7 +355,10 @@ class Menu:
                             self.__init__(self.screen, self.dashboard, self.level, self.sound, self.choosenPlayer)
                             return
                         else:
+                            self.inTakingPhoto = True
+                            self.currSelectedPlayer = 1
                             self.takePhoto()
+                            print('bbb')
                             return
                     if not self.inSettings:
                         if self.state == 0:
