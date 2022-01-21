@@ -18,20 +18,21 @@ class Input1:
 
     def checkForKeyboardInput(self):
         pressedKeys = pygame.key.get_pressed()
-        if self.server.connected:
-            self.server.get_data()
+        if self.server.connected2:
+            self.server.get_data2()
+            self.server._setmode2(2)
 
-        if pressedKeys[K_a]:
+        if pressedKeys[K_a] or self.server.keyDirection2 == "Left":
             self.entity.traits["goTrait"].direction = -1
-        elif pressedKeys[K_d]:
+        elif pressedKeys[K_d] or self.server.keyDirection2 == "Right":
             self.entity.traits["goTrait"].direction = 1
         else:
             self.entity.traits['goTrait'].direction = 0
 
-        isJumping = pressedKeys[K_w] or (self.server.loudness > 85)
+        isJumping = pressedKeys[K_w] or (self.server.loudness2 > 85)
         
-        isFencing = pressedKeys[K_q] or (self.server.attack)
-        isShooting = pressedKeys[K_e] or (self.server.pressed)
+        isFencing = pressedKeys[K_q] or (self.server.attack2)
+        isShooting = pressedKeys[K_e] or (self.server.pressed2)
 
         self.entity.traits['jumpTrait'].jump(isJumping)
         self.entity.isFencing = isFencing

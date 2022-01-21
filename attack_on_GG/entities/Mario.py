@@ -268,6 +268,8 @@ class Mario(EntityBase):
 
     def loseLife(self):
         self.dashboard.life -= 1
+        # self.menu.server.get_data()
+        self.menu.server._setmode(3)
         self.pre_loseLife = self.time
         self.sound.music_channel.stop()
         self.sound.music_channel.play(self.sound.lose_life)

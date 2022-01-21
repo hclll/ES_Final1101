@@ -11,8 +11,8 @@ import threading
 
 windowSize = 640, 480
 
-HOST = '192.168.203.224'
-PORT = 61038
+HOST = '172.20.10.4'
+PORT = 61052
 
 server = Server(HOST, PORT)
 
@@ -36,8 +36,11 @@ def main():
     menu.update()
     menu.update()
 
-    # if not server.connected:
-    #     server._connect()
+    if not server.connected:
+        server._connect()
+        server._setmode(3)
+    if server.connected2:
+        menu.playerNum = 2
     
     while not menu.start:
         menu.update()

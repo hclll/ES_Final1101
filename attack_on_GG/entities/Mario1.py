@@ -23,15 +23,15 @@ class Mario1(EntityBase):
     def __init__(self, x, y, level, screen, dashboard, sound, windowSize, menu, pos2mario, camera, gravity=0.8):
         self.menu = menu
 
-        self.menu.choosenPlayer = "Mario"
-        if self.menu.choosenPlayer == "Mario":
+        # self.menu.choosenPlayer2 = "Mario"
+        if self.menu.choosenPlayer2 == "Mario.jpg":
             super(Mario1, self).__init__(x, y, gravity)
         else:
-            self.image = pygame.image.load('{}'.format(os.path.join('playerimg', self.menu.choosenPlayer))).convert_alpha()
+            self.image = pygame.image.load('{}'.format(os.path.join('playerimg', self.menu.choosenPlayer2))).convert_alpha()
             self.image = pygame.transform.scale(self.image, (int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32))
             super(Mario1, self).__init__(x, y, gravity, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
         spriteCollection = Sprites().spriteCollection
-        if self.menu.choosenPlayer == "Mario":
+        if self.menu.choosenPlayer2 == "Mario.jpg":
             self.smallAnimation = Animation(
                 [
                     spriteCollection["mario_run1"].image,
@@ -201,7 +201,7 @@ class Mario1(EntityBase):
                 self.powerUpState = 0
                 self.traits['goTrait'].updateAnimation(self.smallAnimation)
                 x, y = self.rect.x, self.rect.y
-                if self.menu.choosenPlayer == "Mario":
+                if self.menu.choosenPlayer2 == "Mario.jpg":
                     self.rect = pygame.Rect(x, y + 32, 32, 32)
                 else:
                     self.rect = pygame.Rect(x, y + 32, int(self.image.get_size()[0]*32/self.image.get_size()[1]), 32)
@@ -273,6 +273,8 @@ class Mario1(EntityBase):
 
     def loseLife(self):
         self.dashboard.life -= 1
+        # self.menu.server.get_data2()
+        self.menu.server._setmode2(3)
         self.pre_loseLife = self.time
         self.sound.music_channel.stop()
         self.sound.music_channel.play(self.sound.lose_life)
@@ -290,7 +292,7 @@ class Mario1(EntityBase):
             if powerupID == 1:
                 self.powerUpState = 1
                 self.traits['goTrait'].updateAnimation(self.bigAnimation)
-                if self.menu.choosenPlayer == "Mario":
+                if self.menu.choosenPlayer2 == "Mario.jpg":
                     self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)
                 else:
                     self.rect = pygame.Rect(self.rect.x, self.rect.y-32, 32, 64)#int(self.image.get_size()[0]*64/self.image.get_size()[1]), 64)

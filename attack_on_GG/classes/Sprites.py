@@ -78,8 +78,8 @@ class Sprites:
                             ySize = sprite['ysize']
                         except KeyError:
                             xSize, ySize = data['size']
-                        if data["spriteSheetURL"] == "./img/burger.png":
-                            print(xSize, ySize)
+                        # if data["spriteSheetURL"] == "./img/burger.png":
+                        #     print(xSize, ySize)
                         dic[sprite["name"]] = Sprite(
                             mySpritesheet.image_at(
                                 sprite["x"],

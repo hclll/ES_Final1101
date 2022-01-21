@@ -34,8 +34,8 @@ class Server:
     def __init__(self, HOST, PORT):
         self.HOST = HOST
         self.PORT = PORT
-        # self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # self.s.bind((self.HOST, self.PORT))
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.bind((self.HOST, self.PORT))
         self.bias = [0 for i in range(6)]
         self.fRad2Deg = 57.295779513 # Coefficient from Rad to Deg
         self.dt_1 = 0.005 # Time Period
@@ -44,19 +44,29 @@ class Server:
         self.R = 0.98
 
         self.last_data = 'NULL'
+        self.last_data2 = 'NULL'
         self.connected = False
+        self.connected2 = False
 
         self.loudness = 0
+        self.loudness2 = 0
         self.keyDirection = "No"
+        self.keyDirection2 = "No"
         self.attack = 0
+        self.attack2 = 0
         self.pressed = 0
+        self.pressed2 = 0
         self.button_last = 0
+        self.button_last2 = 0
 
         self.cutOffFrequency = 400.0
         self.sampleRate = 16000
 
         self.freqRatio = (self.cutOffFrequency/self.sampleRate)
         self.N = int(sqrt(0.196196 + self.freqRatio**2)/self.freqRatio)
+
+        self.idle_time = 0
+        self.idle_time2 = 0
 
 
     def _read_data_chunk(self, input, format_tag, channels, bit_depth, is_big_endian,
@@ -217,8 +227,21 @@ class Server:
 
 
     def get_data(self):
-        buffer = self.client_socket.recv(1024).decode('utf-8')
+        try:
+            buffer = self.client_socket.recv(1024).decode('utf-8')
+        except:
+            # self.connected = 0
+            return
+        #     print("unconnected")
+        #     return
             # print('Received from socket server : ', data)
+        # if (len(buffer) == 0):
+        #     self.idle_time += 1
+        #     print("idle")
+        # if self.idle_time >= 5:
+        #     self.connected = 0
+        #     self.idle_time = 0
+        #     return
         chunk = buffer.split('\n')
         for data in chunk:
             # print(data) 
@@ -264,10 +287,10 @@ class Server:
                 elif (rectified[0] > 30):
                     print("Right")
                     self.keyDirection = "Right"
-                elif (rectified[1] > 30):
+                elif (rectified[1] > 20):
                     print("Up")
                     self.keyDirection = "Up"
-                elif (rectified[1] < -30):
+                elif (rectified[1] < -20):
                     print("Down")
                     self.keyDirection = "Down"
                 else:
@@ -292,19 +315,102 @@ class Server:
 
                 self.last_data = rectified[2]
 
-                self.CalculateAngle_Complementary(rectified)
+                # self.CalculateAngle_Complementary(rectified)
                 # print("angle: ", self.angle)
 
-    def on_new_client(self, clientsocket, addr):
-        print("connected from", addr)
-        self.count_bias(clientsocket, addr)
+    def get_data2(self):
+        try:
+            buffer = self.client_socket2.recv(1024).decode('utf-8')
+        except:
+            # self.connected2 = 0
+            return
+            # print('Received from socket server : ', data)
+        chunk = buffer.split('\n')
+        for data in chunk:
+            # print(data) 
+            if (len(data) and data[0] == 'W'):
+                # print(data)
+                # try:
+                wavedata = np.array(bytearray.fromhex(data[2:162]))
+                wavedata = self._read_data_chunk(wavedata, 1, 1, 16, False, 2, False)
+                # if (len(wavedata) == 0):
+                #     continue
+                filtered = self.running_mean(wavedata, self.N)
+                db = 20 * log10(sqrt(mean(filtered.astype('int64') ** 2)))
+                print(db)
+                self.loudness2 = db
+                continue
+                # except:
+                #     continue
+                
+            # print(data)
+            
+            # # print(raw)
+            # # print(len(raw))
+            raw = data.split(' ')
+            if (len(raw) == 7):
+                # print(raw)
+                raw = [int(x) for x in raw]
+                if (raw[6] == 1 and self.button_last2 == 0):
+                    print("Pressed!2")
+                    self.pressed2 = 1
+                else:
+                    self.pressed2 = 0
+                
+                self.button_last2 = raw[6]
+                
 
-        last_data = 0
-        cnt_shake = 0
-        t_shake = 0
-        # return
-        while True:
-            self.get_data()
+                rectified = self.RectifyData(raw)
+
+                # print(rectified[3:])
+
+                if (rectified[0] < -30):
+                    print("Left2")
+                    self.keyDirection2 = "Left"
+                elif (rectified[0] > 30):
+                    print("Right2")
+                    self.keyDirection2 = "Right"
+                elif (rectified[1] > 20):
+                    print("Up2")
+                    self.keyDirection2 = "Up"
+                elif (rectified[1] < -20):
+                    print("Down2")
+                    self.keyDirection2 = "Down"
+                else:
+                    self.keyDirection2 = "No"
+
+                if (self.last_data2 != 'NULL' and rectified[2] - self.last_data2 > 100):
+                    print("Attack2")
+                    self.attack2 = 1
+                else:
+                    self.attack2 = 0
+                #     cnt_shake += rectified[2] - last_data
+                #     t_shake += 1
+                # else:
+                #     cnt_shake = 0
+                #     t_shake = 0
+
+                # if cnt_shake > 300 and t_shake < 10:
+                #     print("Attack")
+                #     cnt_shake = 0
+                #     t_shake = 0
+                # print(rectified)
+
+                self.last_data2 = rectified[2]
+
+                # self.CalculateAngle_Complementary(rectified)
+                # print("angle: ", self.angle)
+
+    # def on_new_client(self, clientsocket, addr):
+    #     print("connected from", addr)
+    #     self.count_bias(clientsocket, addr)
+
+    #     last_data = 0
+    #     cnt_shake = 0
+    #     t_shake = 0
+    #     # return
+    #     while True:
+    #         self.get_data()
                     
     def _connect(self):
         
@@ -320,8 +426,28 @@ class Server:
                 # break
         # clientsocket.close()
         self.connected = True
+    
+    def _connect2(self):
+        
+        print("connecting2 ... ")
+        self.s.listen()
+        conn, addr = self.s.accept()
+        print("connected2")
+        # t = threading.Thread(target=self.on_new_client, args=(conn, addr))
+        # t.start()
 
+        self.client_socket2 = conn
+        self.addr2 = addr
+                # break
+        # clientsocket.close()
+        self.connected2 = True
 
+    def _setmode(self, x):
+        encodedMessage = bytes(str(x), 'utf-8')
+        self.client_socket.sendall(encodedMessage)
+    def _setmode2(self, x):
+        encodedMessage = bytes(str(x), 'utf-8')
+        self.client_socket2.sendall(encodedMessage)
 
     
             

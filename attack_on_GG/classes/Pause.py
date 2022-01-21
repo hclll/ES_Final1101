@@ -40,6 +40,7 @@ class Pause:
     def checkInput(self):
         if self.server.connected:
             self.server.get_data()
+            self.server._setmode(1)
             if self.server.pressed:
                 if self.state == 0:
                     self.entity.pause = False

@@ -7,7 +7,7 @@ from classes.Spritesheet import Spritesheet
 
 
 class Menu:
-    def __init__(self, screen, dashboard, level, sound, server, choosenPlayer="Strong Shiba.png"):
+    def __init__(self, screen, dashboard, level, sound, server, choosenPlayer="Strong Shiba.png", choosenPlayer2="Capoo.jpg"):
         self.screen = screen
         self.sound = sound
         self.start = False
@@ -18,6 +18,7 @@ class Menu:
         self.sfx = True
         self.currSelectedLevel = 2
         self.currSelectedPlayer = 1
+        self.currSelectedPlayer2 = 2
         self.levelNames = []
         self.playerNames = []
         self.inChoosingLevel = False
@@ -27,6 +28,7 @@ class Menu:
         self.levelCount = 0
         self.playerCount = 0
         self.choosenPlayer = choosenPlayer
+        self.choosenPlayer2 = choosenPlayer2
         self.spritesheet = Spritesheet("./img/title_screen.png")
 
         self.bannerImg = pygame.image.load("./img/banner.png")
@@ -42,12 +44,16 @@ class Menu:
         self.loadSettings("./settings.json")
         self.server = server
         self.serverDirDelay = 0
+        self.serverDirDelay2 = 0
 
         self.stmImg = pygame.image.load("./img/controller2.png")
         self.stmImg.convert()
         self.stmImg = pygame.transform.scale(self.stmImg, (35,30))
 
-        self.playerNum = 2
+        if self.server.connected2:
+            self.playerNum = 2
+        else:
+            self.playerNum = 1
 
     def update(self):
         self.checkInput()
@@ -64,11 +70,16 @@ class Menu:
         else:
             self.drawSettings()
 
-        print(self.server)
+        # print(self.server)
         if self.server.connected:
             self.screen.blit(self.stmImg, (325, 30))
         else:
             self.dashboard.drawText("Connecting to controller...", 180, 60, 13)
+            # pygame.time.delay(500)
+            # pygame.display.update()
+            # self.server._connect()
+            # self.server._setmode(3)
+
 
 
     def drawDot(self):
@@ -95,25 +106,35 @@ class Menu:
 
     def drawSettingDot(self):
         if self.state == 0:
-            self.screen.blit(self.menu_dot, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 303))
-            self.screen.blit(self.menu_dot2, (145, 332))
-            self.screen.blit(self.menu_dot2, (145, 362))
+            self.screen.blit(self.menu_dot, (145, 263))
+            self.screen.blit(self.menu_dot2, (145, 293))
+            self.screen.blit(self.menu_dot2, (145, 322))
+            self.screen.blit(self.menu_dot2, (145, 352))
+            self.screen.blit(self.menu_dot2, (145, 382))
         elif self.state == 1:
-            self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot, (145, 303))
-            self.screen.blit(self.menu_dot2, (145, 332))
-            self.screen.blit(self.menu_dot2, (145, 362))
+            self.screen.blit(self.menu_dot2, (145, 263))
+            self.screen.blit(self.menu_dot, (145, 293))
+            self.screen.blit(self.menu_dot2, (145, 322))
+            self.screen.blit(self.menu_dot2, (145, 352))
+            self.screen.blit(self.menu_dot2, (145, 382))
         elif self.state == 2:
-            self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 303))
-            self.screen.blit(self.menu_dot, (145, 332))
-            self.screen.blit(self.menu_dot2, (145, 362))
+            self.screen.blit(self.menu_dot2, (145, 263))
+            self.screen.blit(self.menu_dot2, (145, 293))
+            self.screen.blit(self.menu_dot, (145, 322))
+            self.screen.blit(self.menu_dot2, (145, 352))
+            self.screen.blit(self.menu_dot2, (145, 382))
         elif self.state == 3:
-            self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 303))
-            self.screen.blit(self.menu_dot2, (145, 332))
-            self.screen.blit(self.menu_dot, (145, 362))
+            self.screen.blit(self.menu_dot2, (145, 263))
+            self.screen.blit(self.menu_dot2, (145, 293))
+            self.screen.blit(self.menu_dot2, (145, 322))
+            self.screen.blit(self.menu_dot, (145, 352))
+            self.screen.blit(self.menu_dot2, (145, 382))
+        elif self.state == 4:
+            self.screen.blit(self.menu_dot2, (145, 263))
+            self.screen.blit(self.menu_dot2, (145, 293))
+            self.screen.blit(self.menu_dot2, (145, 322))
+            self.screen.blit(self.menu_dot2, (145, 352))
+            self.screen.blit(self.menu_dot, (145, 382))
 
     def loadSettings(self, url):
         try:
@@ -175,6 +196,19 @@ class Menu:
                 image,
                 (2 * 32, 12 * 32),
             )
+        if self.playerNum == 2:
+            if self.choosenPlayer2 == "Mario.jpg":
+                self.screen.blit(
+                    self.level.sprites.spriteCollection.get("mario_idle").image,
+                    (1 * 32, 12 * 32),
+                )
+            else:
+                image = pygame.image.load('{}'.format(os.path.join('playerimg', self.choosenPlayer2))).convert_alpha()
+                image = pygame.transform.scale(image, (int(image.get_size()[0]*32/image.get_size()[1]), 32))
+                self.screen.blit(
+                    image,
+                    (1 * 32, 12 * 32),
+                )
         self.screen.blit(
             self.level.sprites.spriteCollection.get("bush_1").image, (14 * 32, 12 * 32)
         )
@@ -194,19 +228,24 @@ class Menu:
 
     def drawSettings(self):
         self.drawSettingDot()
-        self.dashboard.drawText("MUSIC", 180, 280, 24)
+        self.dashboard.drawText("MUSIC", 180, 270, 24)
         if self.music:
-            self.dashboard.drawText("ON", 340, 280, 24)
+            self.dashboard.drawText("ON", 340, 270, 24)
         else:
-            self.dashboard.drawText("OFF", 340, 280, 24)
+            self.dashboard.drawText("OFF", 340, 270, 24)
         
-        self.dashboard.drawText("SFX", 180, 310, 24)
+        self.dashboard.drawText("SFX", 180, 300, 24)
         if self.sfx:
-            self.dashboard.drawText("ON", 340, 310, 24)
+            self.dashboard.drawText("ON", 340, 300, 24)
         else:
-            self.dashboard.drawText("OFF", 340, 310, 24)
-        self.dashboard.drawText("RESET", 180, 340, 24)
-        self.dashboard.drawText("BACK", 180, 370, 24)
+            self.dashboard.drawText("OFF", 340, 300, 24)
+        self.dashboard.drawText("RESET", 180, 330, 24)
+        self.dashboard.drawText("PLAYER", 180, 360, 24)
+        if self.playerNum == 1:
+            self.dashboard.drawText("1", 340, 360, 24)
+        else:
+            self.dashboard.drawText("2", 340, 360, 24)
+        self.dashboard.drawText("BACK", 180, 390, 24)
     def chooseLevel(self):
         self.drawMenuBackground(False)
         self.inChoosingLevel = True
@@ -258,8 +297,11 @@ class Menu:
             
             if self.currSelectedPlayer == i+1:
                 color = (255, 0, 0)
+            elif self.playerNum == 2 and self.currSelectedPlayer2 == i+1:
+                color = (0, 0, 255)
             else:
                 color = (150, 150, 150)
+
             if i < 3:
                 self.screen.blit(image, (175*i+imageOffset, 60))
                 self.dashboard.drawText(playerName.split(".")[0], 175*i+textOffset, 193, 12)
@@ -296,7 +338,7 @@ class Menu:
             if os.path.split(f)[1].split(".")[1] == 'jpg' or os.path.split(f)[1].split(".")[1] == 'png':
                 res.append(os.path.split(f)[1].split(".")[0])
                 res1.append(os.path.split(f)[1])
-        res.append(res.pop(res.index("Add Player")))
+        # res.append(res.pop(res.index("Add Player")))
         self.playerCount = len(res)
         # print("res1",res1)
         # print("res",res)
@@ -306,6 +348,10 @@ class Menu:
     def checkInput(self):
         if self.server.connected:
             self.server.get_data()
+            self.server._setmode(1)
+            if self.playerNum == 2:
+                self.server.get_data2()
+                self.server._setmode2(1)
             if self.server.pressed:
                 if self.inChoosingLevel:
                     self.inChoosingLevel = False
@@ -319,7 +365,8 @@ class Menu:
                     if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                         self.inChoosingPlayer = False
                         self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
-                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
+                        self.choosenPlayer2 = self.playerNames[self.currSelectedPlayer2-1]
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer, self.choosenPlayer2)
                         return
                     else:
                         self.takePhoto()
@@ -353,7 +400,45 @@ class Menu:
                             self.sfx = True
                         self.saveSettings("./settings.json")
                     elif self.state == 2:
+                        pass
+                    elif self.state == 3:
+                        if self.playerNum == 1:
+                            self.server._connect2()
+                            self.server._setmode2(3)
+                            self.playerNum = 2
+                        else:
+                            self.playerNum = 1
+                        self.saveSettings("./settings.json")
+                    elif self.state == 4:
+                        self.state = 2
                         self.inSettings = False
+
+            if self.serverDirDelay2 > 0:
+                self.serverDirDelay2 -= 1
+            elif self.server.keyDirection2 == "Up":
+                if self.inChoosingPlayer:
+                    if self.currSelectedPlayer2 > 3:
+                        self.currSelectedPlayer2 -= 3
+                        self.drawPlayerChooser()
+                self.serverDirDelay2 = 5
+            elif  self.server.keyDirection2 == "Down":
+                if self.inChoosingPlayer:
+                    if self.currSelectedPlayer2+3 <= self.playerCount:
+                        self.currSelectedPlayer2 += 3
+                        self.drawPlayerChooser()
+                self.serverDirDelay2 = 5
+            elif self.server.keyDirection2 == "Left":
+                if self.inChoosingPlayer:
+                    if self.currSelectedPlayer2 > 1:
+                        self.currSelectedPlayer2 -= 1
+                        self.drawPlayerChooser()
+                self.serverDirDelay2 = 5
+            elif self.server.keyDirection2 == "Right":
+                if self.inChoosingPlayer:
+                    if self.currSelectedPlayer2 < self.playerCount:
+                        self.currSelectedPlayer2 += 1
+                        self.drawPlayerChooser()
+                self.serverDirDelay2 = 5
 
             if self.serverDirDelay > 0:
                 self.serverDirDelay -= 1
@@ -368,7 +453,7 @@ class Menu:
                         self.drawPlayerChooser()
                 if self.state > 0:
                     self.state -= 1
-                self.serverDirDelay = 3
+                self.serverDirDelay = 5
             elif self.server.keyDirection == "Down":
                 if self.inChoosingLevel:
                     if self.currSelectedLevel+3 <= self.levelCount:
@@ -380,9 +465,9 @@ class Menu:
                         self.drawPlayerChooser()
                 if not self.inSettings and self.state < 3:
                     self.state += 1
-                elif self.inSettings and self.state < 3:
+                elif self.inSettings and self.state < 4:
                     self.state += 1
-                self.serverDirDelay = 3
+                self.serverDirDelay = 5
             elif self.server.keyDirection == "Left":
                 if self.inChoosingLevel:
                     if self.currSelectedLevel > 1:
@@ -392,7 +477,7 @@ class Menu:
                     if self.currSelectedPlayer > 1:
                         self.currSelectedPlayer -= 1
                         self.drawPlayerChooser()
-                self.serverDirDelay = 3
+                self.serverDirDelay = 5
             elif self.server.keyDirection == "Right":
                 if self.inChoosingLevel:
                     if self.currSelectedLevel < self.levelCount:
@@ -402,8 +487,7 @@ class Menu:
                     if self.currSelectedPlayer < self.playerCount:
                         self.currSelectedPlayer += 1
                         self.drawPlayerChooser()
-                self.serverDirDelay = 3
-
+                self.serverDirDelay = 5
 
 
         events = pygame.event.get()
@@ -417,52 +501,72 @@ class Menu:
                         self.inChoosingLevel = False
                         self.inSettings = False
                         self.inChoosingPlayer = False
-                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
+                        self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer, self.choosenPlayer2)
                     else:
                         pygame.quit()
                         sys.exit()
-                elif event.key == pygame.K_UP or event.key == pygame.K_k:
+                elif event.key == pygame.K_UP or event.key == pygame.K_w:
                     if self.inChoosingLevel:
                         if self.currSelectedLevel > 3:
                             self.currSelectedLevel -= 3
                             self.drawLevelChooser()
                     elif self.inChoosingPlayer:
-                        if self.currSelectedPlayer > 3:
-                            self.currSelectedPlayer -= 3
-                            self.drawPlayerChooser()
+                        if event.key == pygame.K_UP:
+                            if self.currSelectedPlayer > 3:
+                                self.currSelectedPlayer -= 3
+                                self.drawPlayerChooser()
+                        else:
+                            if self.currSelectedPlayer2 > 3:
+                                self.currSelectedPlayer2 -= 3
+                                self.drawPlayerChooser()
                     if self.state > 0:
                         self.state -= 1
-                elif event.key == pygame.K_DOWN or event.key == pygame.K_j:
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     if self.inChoosingLevel:
                         if self.currSelectedLevel+3 <= self.levelCount:
                             self.currSelectedLevel += 3
                             self.drawLevelChooser()
                     elif self.inChoosingPlayer:
-                        if self.currSelectedPlayer+3 <= self.playerCount:
-                            self.currSelectedPlayer += 3
-                            self.drawPlayerChooser()
+                        if event.key == pygame.K_DOWN:
+                            if self.currSelectedPlayer+3 <= self.playerCount:
+                                self.currSelectedPlayer += 3
+                                self.drawPlayerChooser()
+                        else:
+                            if self.currSelectedPlayer2+3 <= self.playerCount:
+                                self.currSelectedPlayer2 += 3
+                                self.drawPlayerChooser()
                     if not self.inSettings and self.state < 3:
                         self.state += 1
-                    elif self.inSettings and self.state < 3:
+                    elif self.inSettings and self.state < 4:
                         self.state += 1
-                elif event.key == pygame.K_LEFT or event.key == pygame.K_h:
+                elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     if self.inChoosingLevel:
                         if self.currSelectedLevel > 1:
                             self.currSelectedLevel -= 1
                             self.drawLevelChooser()
                     elif self.inChoosingPlayer:
-                        if self.currSelectedPlayer > 1:
-                            self.currSelectedPlayer -= 1
-                            self.drawPlayerChooser()
-                elif event.key == pygame.K_RIGHT or event.key == pygame.K_l:
+                        if event.key == pygame.K_LEFT:
+                            if self.currSelectedPlayer > 1:
+                                self.currSelectedPlayer -= 1
+                                self.drawPlayerChooser()
+                        else:
+                            if self.currSelectedPlayer2 > 2:
+                                self.currSelectedPlayer2 -= 1
+                                self.drawPlayerChooser()
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     if self.inChoosingLevel:
                         if self.currSelectedLevel < self.levelCount:
                             self.currSelectedLevel += 1
                             self.drawLevelChooser()
                     elif self.inChoosingPlayer:
-                        if self.currSelectedPlayer < self.playerCount:
-                            self.currSelectedPlayer += 1
-                            self.drawPlayerChooser()
+                        if event.key == pygame.K_RIGHT:
+                            if self.currSelectedPlayer < self.playerCount:
+                                self.currSelectedPlayer += 1
+                                self.drawPlayerChooser()
+                        else:
+                            if self.currSelectedPlayer2 < self.playerCount:
+                                self.currSelectedPlayer2 += 1
+                                self.drawPlayerChooser()
                 elif event.key == pygame.K_RETURN:
                     if self.inChoosingLevel:
                         self.inChoosingLevel = False
@@ -479,12 +583,14 @@ class Menu:
                         if self.playerNames[self.currSelectedPlayer-1] != "Add Player":
                             self.inChoosingPlayer = False
                             self.choosenPlayer = self.playerNames[self.currSelectedPlayer-1]
+                            self.choosenPlayer2 = self.playerNames[self.currSelectedPlayer2-1]
                             print(self.choosenPlayer)
-                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer)
+                            self.__init__(self.screen, self.dashboard, self.level, self.sound, self.server, self.choosenPlayer, self.choosenPlayer2)
                             return
                         else:
                             self.inTakingPhoto = True
                             self.currSelectedPlayer = 1
+                            self.currSelectedPlayer2 = 2
                             self.takePhoto()
                             return
                     if not self.inSettings:
@@ -518,5 +624,15 @@ class Menu:
                         elif self.state == 2:
                             pass
                         elif self.state == 3:
+                            if self.playerNum == 1:
+                                self.server._connect2()
+                                self.server._setmode2(3)
+                                self.playerNum = 2
+                            else:
+                                self.playerNum = 1
+                            self.saveSettings("./settings.json")
+                        else:
+                            self.state = 2
                             self.inSettings = False
+
         pygame.display.update()

@@ -20,6 +20,7 @@ class Input:
         pressedKeys = pygame.key.get_pressed()
         if self.server.connected:
             self.server.get_data()
+            self.server._setmode(2)
 
         if (pressedKeys[K_LEFT] or pressedKeys[K_h] and not pressedKeys[K_RIGHT]) or self.server.keyDirection == "Left":
             self.entity.traits["goTrait"].direction = -1
@@ -28,7 +29,7 @@ class Input:
         else:
             self.entity.traits['goTrait'].direction = 0
 
-        isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP] or pressedKeys[K_k] or (self.server.loudness > 85)
+        isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP] or pressedKeys[K_k] or (self.server.loudness > 75)
         
         isFencing = pressedKeys[K_c] or (self.server.attack)
         isShooting = pressedKeys[K_v] or (self.server.pressed)
