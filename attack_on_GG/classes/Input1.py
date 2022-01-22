@@ -29,7 +29,7 @@ class Input1:
         else:
             self.entity.traits['goTrait'].direction = 0
 
-        isJumping = pressedKeys[K_w] or (self.server.loudness2 > 85)
+        isJumping = pressedKeys[K_w] or (self.server.loudness2 > 75)
         
         isFencing = pressedKeys[K_q] or (self.server.attack2)
         isShooting = pressedKeys[K_e] or (self.server.pressed2)
